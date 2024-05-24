@@ -1,4 +1,2 @@
-# React template
-# .husky installed + configured
-# eslint  configured
-# prettier configured
+# Movie DB
+Для создания используются хуки
