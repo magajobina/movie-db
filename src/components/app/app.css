@@ -1,0 +1,92 @@
+body {
+  background: #f7f7f7;
+  margin: 0;
+  padding: 0;
+}
+
+.app {}
+
+.container {
+  max-width: 946px;
+  padding: 0 32px;
+  margin: 0 auto;
+  background: #fff;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.self__card {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 183px auto;
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+  height: 280px;
+  overflow: hidden;
+}
+
+.self__img-wrapper {
+  width: 100%;
+  height: 280px;
+  position: relative;
+  /* height: 280px; */
+  overflow: hidden;
+}
+
+.self__img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+.self__content {
+  padding: 10px 10px 10px 0;
+}
+
+.self__title {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 140%;
+  margin-top: 0;
+  margin-bottom: 7px;
+}
+
+.self__date {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 183%;
+  color: #827e7e;
+}
+
+.self__genres {
+  margin-top: 5px;
+  margin-bottom: 8px;
+}
+
+.self__genres span {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.self__desc {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 180%;
+  color: #000;
+}
+
+@media (max-width: 992px) {
+  .ant-col {
+    display: flex;
+    justify-content: center;
+  }
+
+  .self__card {
+    grid-template-columns: 183px 248px
+  }
+}
