@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Col, Row, Spin, Alert } from 'antd'
 import { useState, useEffect } from 'react'
+import { Offline, Online } from 'react-detect-offline'
 import FilmsList from '../filmsList'
 import Spinner from '../spinner'
 import MovieService from '../../services/movie-service'
@@ -43,12 +44,14 @@ export default function App() {
   return (
     <div className="app">
       <div className="container">
-        <Alert
-          message="Warning"
-          description="You are offline now"
-          type="warning"
-          className="warning-alert"
-        />
+        <Offline>
+          <Alert
+            message="Warning"
+            description="You are offline now"
+            type="warning"
+            className="warning-alert"
+          />
+        </Offline>
         <Row gutter={[32, 16]}>{showContent()}</Row>
       </div>
     </div>
