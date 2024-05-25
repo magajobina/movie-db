@@ -1,41 +1,55 @@
 /* eslint-disable no-unused-vars */
-import { Row } from 'antd'
+import { Col, Row, Spin, Alert } from 'antd'
 import { useState, useEffect } from 'react'
 import FilmsList from '../filmsList'
+import Spinner from '../spinner'
 import MovieService from '../../services/movie-service'
 import './app.css'
 
 export default function App() {
-  const [filmsObj, setFilmsObj] = useState([{
-    title: 'item.title',
-    overview: 'item.overview',
-    releaseDate: '12-06-2021',
-    posterPath: 'item.poster_path',
-    id: 'item.id'
-  }])
+  const [filmsObj, setFilmsObj] = useState([{}])
+  const [spinner, setSpinner] = useState(true)
+  const [showAlert, setShowAlert] = useState(false)
 
   useEffect(() => {
     const mov = new MovieService()
 
-    mov.searchFilms().then((list) => {
-      console.log(list)
-      const result = list.map((item) => ({
-        title: item.title,
-        overview: item.overview,
-        releaseDate: item.release_date,
-        posterPath: item.poster_path,
-        id: item.id
-      }))
-      setFilmsObj(result)
-    })
+    mov
+      .searchFilms('return')
+      .then((result) => {
+        console.log(result)
+
+        setFilmsObj(result)
+        setSpinner(false)
+      })
+      .catch((error) => {
+        setShowAlert(true)
+        console.error(error)
+      })
   }, [])
+
+  const showContent = () => {
+    if (showAlert) {
+      return (
+        <Alert message="Error" description="Произошла ошибка" type="error" showIcon />
+      )
+    }
+
+    if (spinner) return <Spinner />
+
+    return <FilmsList filmsObj={filmsObj} />
+  }
 
   return (
     <div className="app">
       <div className="container">
-        <Row gutter={[32, 16]}>
-          <FilmsList filmsObj={filmsObj} />
-        </Row>
+        <Alert
+          message="Warning"
+          description="You are offline now"
+          type="warning"
+          className="warning-alert"
+        />
+        <Row gutter={[32, 16]}>{showContent()}</Row>
       </div>
     </div>
   )

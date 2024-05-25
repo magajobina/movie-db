@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable class-methods-use-this */
+/* eslint-disable array-callback-return */
 export default class MovieService {
   #apiBase = 'https://api.themoviedb.org/3/search/movie'
 
@@ -18,9 +21,22 @@ export default class MovieService {
     return res.results
   }
 
-  async searchFilms() {
-    const res = await this.getResource(`?query=return`)
-    return res.results
+  async transformSearchFilms(filmsList) {
+    const result = filmsList.map((item) => ({
+      title: item.title,
+      overview: item.overview,
+      releaseDate: item.release_date,
+      posterPath: item.poster_path,
+      id: item.id,
+    }))
+    return result
+  }
+  
+  async searchFilms(keyWords) {
+    const res = await this.getResource(`?query=${keyWords}`)
+    
+    return this.transformSearchFilms(res.results)
+    // return new Error('qweqwe')
   }
 
 }

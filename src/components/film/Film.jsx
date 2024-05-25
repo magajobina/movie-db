@@ -25,7 +25,6 @@ export default function Film({ title, overview, posterPath, releaseDate }) {
 
     return `https://image.tmdb.org/t/p/w500${posterPath}`
   }
-  // console.log(releaseDate, format(new Date(releaseDate), 'MMMM dd, yyyy', { locale: enGB }))
 
   return (
     <Col lg={12} xs={24}>
@@ -35,7 +34,6 @@ export default function Film({ title, overview, posterPath, releaseDate }) {
         </div>
         <div className="self__content">
           <h2 className="self__title">{title}</h2>
-          {/* <div className="self__date">March 5, 2020</div> */}
           <div className="self__date">{getCorrectDate()}</div>
           <div className="self__genres">
             <Tag>Action</Tag>
