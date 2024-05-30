@@ -31,3 +31,11 @@ body {
 .warning-alert .ant-alert-message {
   font-weight: 700;
 }
+
+.pagination-self {
+  margin-top: 30px;
+}
+
+.search-self {
+  margin-bottom: 34px;
+}

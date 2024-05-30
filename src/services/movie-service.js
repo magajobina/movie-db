@@ -21,7 +21,7 @@ export default class MovieService {
     return res.results
   }
 
-  async transformSearchFilms(filmsList) {
+  transformSearchFilms(filmsList) {
     const result = filmsList.map((item) => ({
       title: item.title,
       overview: item.overview,
@@ -32,10 +32,11 @@ export default class MovieService {
     return result
   }
   
-  async searchFilms(keyWords) {
-    const res = await this.getResource(`?query=${keyWords}`)
-    
-    return this.transformSearchFilms(res.results)
+  async searchFilms(keyWords, pageNumper) {
+    const res = await this.getResource(`?query=${keyWords}&page=${pageNumper}`)
+    console.log(res);
+
+    return [this.transformSearchFilms(res.results), res.total_results]
     // return new Error('qweqwe')
   }
 

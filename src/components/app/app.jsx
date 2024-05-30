@@ -1,5 +1,7 @@
+/* eslint-disable consistent-return */
+/* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-unused-vars */
-import { Col, Row, Spin, Alert } from 'antd'
+import { Col, Row, Spin, Alert, Pagination, Input } from 'antd'
 import { useState, useEffect } from 'react'
 import { Offline, Online } from 'react-detect-offline'
 import FilmsList from '../filmsList'
@@ -8,26 +10,66 @@ import MovieService from '../../services/movie-service'
 import './app.css'
 
 export default function App() {
-  const [filmsObj, setFilmsObj] = useState([{}])
-  const [spinner, setSpinner] = useState(true)
+  const [[filmsObj, total], setFilmsData] = useState([[], null])
+  const [spinner, setSpinner] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
+  const [inputValue, setInputValue] = useState('')
+  const [isFirstTime, setIsFirstTime] = useState(true)
 
   useEffect(() => {
+    if (isFirstTime) {
+      setIsFirstTime(false)
+      return
+    }
+
+    let ignore = false
     const mov = new MovieService()
-
+    setSpinner(true)
     mov
-      .searchFilms('return')
-      .then((result) => {
-        console.log(result)
+      .searchFilms(inputValue, 1)
+      .then((resultArr) => {
+        const [ resultObj, dataTotal ] = resultArr
 
-        setFilmsObj(result)
-        setSpinner(false)
+        if (!ignore) {
+          console.log(resultObj) // этот
+          
+          setFilmsData([resultObj, dataTotal])
+          setSpinner(false)
+        }
       })
       .catch((error) => {
         setShowAlert(true)
         console.error(error)
       })
-  }, [])
+
+    return () => {
+      console.log('return useEffect!');
+      ignore = true
+    }
+
+
+  }, [inputValue])
+
+  const onInputChange = (e) => {
+    setInputValue(e.target.value)
+    console.log(e.target.value)
+  }
+
+  const onPaginationChange = (pageNumber) => {
+    const mov = new MovieService()
+
+    mov
+      .searchFilms(inputValue, pageNumber)
+      .then((resultArr) => {
+        const [ resultObj, dataTotal ] = resultArr
+
+        setFilmsData([resultObj, dataTotal])
+      })
+      .catch((error) => {
+        setShowAlert(true)
+        console.error(error)
+      })
+  }
 
   const showContent = () => {
     if (showAlert) {
@@ -36,8 +78,22 @@ export default function App() {
       )
     }
 
+
+    console.log('Спиннер');
     if (spinner) return <Spinner />
 
+    console.log('Инпут');
+    if (inputValue === '') {
+      return null
+    }
+    
+    if (total === 0) {
+      return (
+        <Alert message="Ничего не найдено" type="warning" showIcon />
+      )
+    }
+
+    console.log('возвращаем filmsList', filmsObj);
     return <FilmsList filmsObj={filmsObj} />
   }
 
@@ -46,13 +102,28 @@ export default function App() {
       <div className="container">
         <Offline>
           <Alert
+            className="warning-alert"
             message="Warning"
             description="You are offline now"
             type="warning"
-            className="warning-alert"
           />
         </Offline>
+        <Input
+          className="search-self"
+          onChange={onInputChange}
+          value={inputValue}
+          size="large"
+          placeholder="Type to search..."
+        />
         <Row gutter={[32, 16]}>{showContent()}</Row>
+        <Pagination
+          className="text-center pagination-self"
+          onChange={onPaginationChange}
+          defaultCurrent={1}
+          total={total}
+          pageSize={20}
+          showSizeChanger={false}
+        />
       </div>
     </div>
   )
