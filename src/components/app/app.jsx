@@ -2,8 +2,9 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-unused-vars */
 import { Col, Row, Spin, Alert, Pagination, Input } from 'antd'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Offline, Online } from 'react-detect-offline'
+import { debounce } from 'lodash'
 import FilmsList from '../filmsList'
 import Spinner from '../spinner'
 import MovieService from '../../services/movie-service'
@@ -23,16 +24,17 @@ export default function App() {
     }
 
     let ignore = false
-    const mov = new MovieService()
     setSpinner(true)
+
+    const mov = new MovieService()
     mov
       .searchFilms(inputValue, 1)
       .then((resultArr) => {
-        const [ resultObj, dataTotal ] = resultArr
+        const [resultObj, dataTotal] = resultArr
 
         if (!ignore) {
-          console.log(resultObj) // этот
-          
+          console.log(resultObj)
+
           setFilmsData([resultObj, dataTotal])
           setSpinner(false)
         }
@@ -43,11 +45,9 @@ export default function App() {
       })
 
     return () => {
-      console.log('return useEffect!');
+      console.log('return useEffect!')
       ignore = true
     }
-
-
   }, [inputValue])
 
   const onInputChange = (e) => {
@@ -61,7 +61,7 @@ export default function App() {
     mov
       .searchFilms(inputValue, pageNumber)
       .then((resultArr) => {
-        const [ resultObj, dataTotal ] = resultArr
+        const [resultObj, dataTotal] = resultArr
 
         setFilmsData([resultObj, dataTotal])
       })
@@ -78,22 +78,23 @@ export default function App() {
       )
     }
 
+    if (spinner) {
+      console.log('Спиннер')
+      return <Spinner />
+    }
 
-    console.log('Спиннер');
-    if (spinner) return <Spinner />
-
-    console.log('Инпут');
-    if (inputValue === '') {
+    if (inputValue === '' && filmsObj.length === 0) {
+      console.log('null на страницу')
       return null
     }
-    
+
     if (total === 0) {
-      return (
-        <Alert message="Ничего не найдено" type="warning" showIcon />
-      )
+      return <Alert message="Ничего не найдено" type="warning" showIcon />
     }
 
-    console.log('возвращаем filmsList', filmsObj);
+    if (total === null) return null
+
+    console.log('возвращаем filmsList', filmsObj)
     return <FilmsList filmsObj={filmsObj} />
   }
 
