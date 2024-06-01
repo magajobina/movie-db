@@ -32,7 +32,7 @@ export default class MovieService {
     return result
   }
   
-  async searchFilms(keyWords, pageNumper) {
+  async searchFilms(keyWords, pageNumper = 1) {
     const res = await this.getResource(`?query=${keyWords}&page=${pageNumper}`)
     console.log(res);
 

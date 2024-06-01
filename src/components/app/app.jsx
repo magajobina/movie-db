@@ -15,44 +15,33 @@ export default function App() {
   const [spinner, setSpinner] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
   const [inputValue, setInputValue] = useState('')
-  const [isFirstTime, setIsFirstTime] = useState(true)
 
-  useEffect(() => {
-    if (isFirstTime) {
-      setIsFirstTime(false)
-      return
-    }
+  const debouncedSearch = useRef(
+    debounce((criteria) => {
+      setSpinner(true)
 
-    let ignore = false
-    setSpinner(true)
+      const mov = new MovieService()
+      mov
+        .searchFilms(criteria, 1)
+        .then((resultArr) => {
+          const [resultObj, dataTotal] = resultArr
 
-    const mov = new MovieService()
-    mov
-      .searchFilms(inputValue, 1)
-      .then((resultArr) => {
-        const [resultObj, dataTotal] = resultArr
-
-        if (!ignore) {
           console.log(resultObj)
 
           setFilmsData([resultObj, dataTotal])
           setSpinner(false)
-        }
-      })
-      .catch((error) => {
-        setShowAlert(true)
-        console.error(error)
-      })
-
-    return () => {
-      console.log('return useEffect!')
-      ignore = true
-    }
-  }, [inputValue])
+        })
+        .catch((error) => {
+          setShowAlert(true)
+          console.error(error)
+        })
+    }, 1000)
+  ).current
 
   const onInputChange = (e) => {
     setInputValue(e.target.value)
     console.log(e.target.value)
+    debouncedSearch(e.target.value)
   }
 
   const onPaginationChange = (pageNumber) => {
