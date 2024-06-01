@@ -60,7 +60,7 @@ export default function App() {
       })
   }
 
-  const showContent = () => {
+  const renderContent = () => {
     if (showAlert) {
       return (
         <Alert message="Error" description="Произошла ошибка" type="error" showIcon />
@@ -105,7 +105,7 @@ export default function App() {
           size="large"
           placeholder="Type to search..."
         />
-        <Row gutter={[32, 16]}>{showContent()}</Row>
+        <Row gutter={[32, 16]}>{renderContent()}</Row>
         <Pagination
           className="text-center pagination-self"
           onChange={onPaginationChange}
