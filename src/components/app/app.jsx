@@ -7,6 +7,8 @@ import { Offline, Online } from 'react-detect-offline'
 import { debounce } from 'lodash'
 import FilmsList from '../filmsList'
 import Spinner from '../spinner'
+import ShowError from '../showError'
+import SearchWarning from '../searchWarning'
 import MovieService from '../../services/movie-service'
 import './app.css'
 
@@ -62,9 +64,7 @@ export default function App() {
 
   const renderContent = () => {
     if (showAlert) {
-      return (
-        <Alert message="Error" description="Произошла ошибка" type="error" showIcon />
-      )
+      return <ShowError />
     }
 
     if (spinner) {
@@ -78,11 +78,10 @@ export default function App() {
     }
 
     if (total === 0) {
-      return <Alert message="Ничего не найдено" type="warning" showIcon />
+      return <SearchWarning message="Ничего не найдено" />
     }
 
     if (total === null) return null
-
     console.log('возвращаем filmsList', filmsObj)
     return <FilmsList filmsObj={filmsObj} />
   }
