@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable array-callback-return */
@@ -34,9 +35,33 @@ export default class MovieService {
 
   async searchFilms(keyWords, pageNumper = 1) {
     const res = await this.getResource(`?query=${keyWords}&page=${pageNumper}`)
-    console.log(res)
+    // console.log(res)
 
     return [this.transformSearchFilms(res.results), res.total_results]
-    // return new Error('qweqwe')
+  }
+}
+
+const addRating = async (movieId, rating, sessionId) => {
+  try {
+    const response = await axios.post(
+      `https://api.themoviedb.org/3/movie/${movieId}/rating`,
+      {
+        value: `${rating}`,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${API_KEY}`,
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+        params: {
+          guest_session_id: `${sessionId}`,
+        },
+      }
+    )
+    console.log('Успешно добавлен рейтинг для фильма:', response.data)
+    return response.data
+  } catch (error) {
+    console.error('Ошибка при добавлении рейтинга:', error)
+    throw error
   }
 }

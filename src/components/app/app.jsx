@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-unused-vars */
-import { Col, Row, Spin, Alert, Pagination, Input } from 'antd'
+import { Col, Row, Spin, Alert, Pagination, Input, Tabs } from 'antd'
 import { useState, useEffect, useRef } from 'react'
 import { Offline, Online } from 'react-detect-offline'
 import { debounce } from 'lodash'
@@ -10,6 +10,7 @@ import Spinner from '../spinner'
 import ShowError from '../showError'
 import SearchWarning from '../searchWarning'
 import MovieService from '../../services/movie-service'
+import TabSearch from '../tabSearch'
 import './app.css'
 
 export default function App() {
@@ -28,7 +29,7 @@ export default function App() {
         .then((resultArr) => {
           const [resultObj, dataTotal] = resultArr
 
-          console.log(resultObj)
+          // console.log(resultObj)
 
           setFilmsData([resultObj, dataTotal])
           setSpinner(false)
@@ -42,7 +43,7 @@ export default function App() {
 
   const onInputChange = (e) => {
     setInputValue(e.target.value)
-    console.log(e.target.value)
+    // console.log(e.target.value)
     debouncedSearch(e.target.value)
   }
 
@@ -82,10 +83,54 @@ export default function App() {
     }
 
     if (total === null) return null
+
     console.log('возвращаем filmsList', filmsObj)
     return <FilmsList filmsObj={filmsObj} />
   }
 
+  const tabsItems = [
+    {
+      key: 'search',
+      label: 'Search',
+      children: (
+        <>
+          <Input
+            className="search-self"
+            onChange={onInputChange}
+            value={inputValue}
+            size="large"
+            placeholder="Type to search..."
+          />
+          <Row gutter={[32, 16]}>{renderContent()}</Row>
+          <Pagination
+            className="text-center pagination-self"
+            onChange={onPaginationChange}
+            defaultCurrent={1}
+            total={total}
+            pageSize={20}
+            showSizeChanger={false}
+          />
+        </>
+      ),
+    },
+    {
+      key: 'rated',
+      label: 'Rated',
+      children: (
+        <>
+          <Row gutter={[32, 16]}>{renderContent()}</Row>
+          <Pagination
+            className="text-center pagination-self"
+            onChange={onPaginationChange}
+            defaultCurrent={1}
+            total={total}
+            pageSize={20}
+            showSizeChanger={false}
+          />
+        </>
+      ),
+    },
+  ]
   return (
     <div className="app">
       <div className="container">
@@ -97,21 +142,13 @@ export default function App() {
             type="warning"
           />
         </Offline>
-        <Input
-          className="search-self"
-          onChange={onInputChange}
-          value={inputValue}
-          size="large"
-          placeholder="Type to search..."
-        />
-        <Row gutter={[32, 16]}>{renderContent()}</Row>
-        <Pagination
-          className="text-center pagination-self"
-          onChange={onPaginationChange}
-          defaultCurrent={1}
-          total={total}
-          pageSize={20}
-          showSizeChanger={false}
+        <Tabs
+          defaultActiveKey="1"
+          centered
+          items={tabsItems}
+          onChange={(e) => {
+            console.log(e)
+          }}
         />
       </div>
     </div>

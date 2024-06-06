@@ -1,17 +1,24 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { Col, Tag } from 'antd'
+import { Col, Tag, Rate } from 'antd'
 import './film.css'
 import { format } from 'date-fns'
 import { enGB } from 'date-fns/locale'
 
 export default function Film({ title, overview, posterPath, releaseDate }) {
   const shortenOverview = () => {
-    if (overview.length < 182) return overview
-    let result = overview.substring(0, 182)
+    if (overview.length < 160) return overview
+    let result = overview.substring(0, 160)
     result = result.substring(0, result.lastIndexOf(' '))
 
     return `${result} ...`
+  }
+  const shortenTitle = () => {
+    if (title.length < 25) return title
+    let result = title.substring(0, 25)
+    result = result.substring(0, result.lastIndexOf(' '))
+
+    return `${result}...`
   }
 
   const getCorrectDate = () => {
@@ -33,13 +40,21 @@ export default function Film({ title, overview, posterPath, releaseDate }) {
           <img className="self__img" src={makePosterSrc()} alt="film poster" />
         </div>
         <div className="self__content">
-          <h2 className="self__title">{title}</h2>
+          <h2 className="self__title">{shortenTitle()}</h2>
           <div className="self__date">{getCorrectDate()}</div>
           <div className="self__genres">
             <Tag>Action</Tag>
             <Tag>Drama</Tag>
           </div>
           <div className="self__desc">{shortenOverview()}</div>
+          <Rate
+            className="self__rating"
+            onChange={(e) => {
+              console.log(e)
+            }}
+            destroyInactiveTabPane
+            count={10}
+          />
         </div>
       </div>
     </Col>

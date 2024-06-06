@@ -1,4 +1,3 @@
-
 .self__card {
   display: grid;
   gap: 20px;
@@ -26,6 +25,8 @@
 
 .self__content {
   padding: 10px 10px 10px 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .self__title {
@@ -63,6 +64,19 @@
   font-size: 12px;
   line-height: 180%;
   color: #000;
+}
+
+.self__rating {
+  display: flex;
+  flex-grow: 1;
+  align-items: flex-end;
+}
+.self__card .self__rating .ant-rate-star {
+  margin-inline-end: 3px;
+}
+
+.self__rating .anticon svg {
+  width: 19px;
 }
 
 @media (max-width: 992px) {
