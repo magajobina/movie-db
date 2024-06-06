@@ -31,13 +31,12 @@ export default class MovieService {
     }))
     return result
   }
-  
+
   async searchFilms(keyWords, pageNumper = 1) {
     const res = await this.getResource(`?query=${keyWords}&page=${pageNumper}`)
-    console.log(res);
+    console.log(res)
 
     return [this.transformSearchFilms(res.results), res.total_results]
     // return new Error('qweqwe')
   }
-
 }
