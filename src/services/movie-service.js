@@ -3,12 +3,16 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable array-callback-return */
 export default class MovieService {
-  #apiBase = 'https://api.themoviedb.org/3/search/movie'
+  #apiBase = 'https://api.themoviedb.org/3'
 
-  async getResource(argUrl) {
-    const apiKey = '&api_key=a4476d262653cb85f05a5e09f346dc29'
-    const url = this.#apiBase + argUrl + apiKey
-    const res = await fetch(url)
+  #apiKey = '&api_key=a4476d262653cb85f05a5e09f346dc29'
+
+  #apiBearer =
+    'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhNDQ3NmQyNjI2NTNjYjg1ZjA1YTVlMDlmMzQ2ZGMyOSIsInN1YiI6IjY2NGNjMTk5YTg3YjJlYTBhMzY2OTM5OSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.zQA5U6nfIAwsRQyU1i3gvtVtI0SG77jkihyN0dUNcCQ'
+
+  async getResource(argUrl, options, useAPIKey = true) {
+    const url = this.#apiBase + argUrl + (useAPIKey ? this.#apiKey : '')
+    const res = await fetch(url, options)
 
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`)
@@ -17,51 +21,81 @@ export default class MovieService {
     return res.json()
   }
 
-  async getPopularFilms() {
-    const res = await this.getResource(`/popular?language=en-US&page=1`)
-    return res.results
+  async createGuestSession() {
+    const url = '/authentication/guest_session/new'
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: this.#apiBearer,
+      },
+    }
+    const res = await this.getResource(url, options, false)
+    return res.guest_session_id
   }
 
-  transformSearchFilms(filmsList) {
+  transformFilmsData(filmsList) {
     const result = filmsList.map((item) => ({
       title: item.title,
       overview: item.overview,
       releaseDate: item.release_date,
       posterPath: item.poster_path,
+      voteAverage: item.vote_average,
+      genreIDs: item.genre_ids,
+      rating: item.rating,
       id: item.id,
     }))
     return result
   }
 
   async searchFilms(keyWords, pageNumper = 1) {
-    const res = await this.getResource(`?query=${keyWords}&page=${pageNumper}`)
-    // console.log(res)
-
-    return [this.transformSearchFilms(res.results), res.total_results]
-  }
-}
-
-const addRating = async (movieId, rating, sessionId) => {
-  try {
-    const response = await axios.post(
-      `https://api.themoviedb.org/3/movie/${movieId}/rating`,
-      {
-        value: `${rating}`,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${API_KEY}`,
-          'Content-Type': 'application/json;charset=utf-8',
-        },
-        params: {
-          guest_session_id: `${sessionId}`,
-        },
-      }
+    const res = await this.getResource(
+      `/search/movie?query=${keyWords}&page=${pageNumper}`
     )
-    console.log('Успешно добавлен рейтинг для фильма:', response.data)
-    return response.data
-  } catch (error) {
-    console.error('Ошибка при добавлении рейтинга:', error)
-    throw error
+    console.log(res)
+
+    return [this.transformFilmsData(res.results), res.total_results]
   }
+
+  async getGenres() {
+    const res = await this.getResource('/genre/movie/list?language=en')
+
+    return res.genres
+  }
+
+  async addRating(movieId, rating, sessionId) {
+    const url = `/movie/${movieId}/rating?guest_session_id=${sessionId}`
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: this.#apiBearer,
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify({ value: `${rating}` }),
+    }
+
+    const res = await this.getResource(url, options, false)
+
+    console.log('Add Rating message:', res.status_message)
+
+    return res.status_message
+  }
+
+  async getRatedMovies(sessionId, pageNumber = 1) {
+    const url = `/guest_session/${sessionId}/rated/movies?language=en-US&page=${pageNumber}&sort_by=created_at.asc`
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: this.#apiBearer,
+      },
+    }
+
+    const res = await this.getResource(url, options, false)
+
+    console.log('getRatedMovies:', res)
+
+    return [this.transformFilmsData(res.results), res.total_results]
+  }
+
 }

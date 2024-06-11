@@ -1,31 +1,27 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-unused-vars */
+/* eslint-disable react/jsx-curly-brace-presence */
 import { Col, Row, Spin, Alert, Pagination, Input, Tabs, Button } from 'antd'
 import { useState, useEffect, useRef } from 'react'
-import { debounce } from 'lodash'
+import MovieService from '../../services/movie-service'
 import FilmsList from '../filmsList'
 import Spinner from '../spinner'
 import ShowError from '../showError'
 import SearchWarning from '../searchWarning'
-import MovieService from '../../services/movie-service'
-import useInput from '../../hooks/useInput'
 
 const mov = new MovieService()
 const OLD_SESSION_ID = 'd04dee17c91f6900e24f25ea3ce65703'
 
-export default function TabSearch({ sessionID }) {
+export default function TabRated({ sessionID }) {
   const [[filmsObj, total], setFilmsData] = useState([[], null])
   const [spinner, setSpinner] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
-  // const [inputValue, setInputValue] = useState('')
-  const input = useInput('')
 
-  const debouncedSearch = useRef(
-    debounce(async (criteria) => {
+  useEffect(() => {
+    const initFilms = async () => {
       try {
         setSpinner(true)
-        const resultArr = await mov.searchFilms(criteria, 1)
+        const resultArr = await mov.getRatedMovies(OLD_SESSION_ID)
         const [resultObj, dataTotal] = resultArr
 
         setFilmsData([resultObj, dataTotal])
@@ -35,18 +31,14 @@ export default function TabSearch({ sessionID }) {
       } finally {
         setSpinner(false)
       }
-    }, 1000)
-  ).current
-
-  useEffect(() => {
-    if (input.value.trim() !== '') {
-      debouncedSearch(input.value)
     }
-  }, [input.value])
+
+    initFilms()
+  }, [])
 
   const onPaginationChange = async (pageNumber) => {
     try {
-      const pagiArr = await mov.searchFilms(input.value, pageNumber)
+      const pagiArr = await mov.getRatedMovies(OLD_SESSION_ID, pageNumber)
       const [resultObj, dataTotal] = pagiArr
 
       setFilmsData([resultObj, dataTotal])
@@ -54,20 +46,6 @@ export default function TabSearch({ sessionID }) {
       setShowAlert(true)
       console.error(error)
     }
-  }
-
-  const onRatingClick = async (rating, movieID) => {
-    try {
-      await mov.addRating(movieID, rating, sessionID)
-    } catch (error) {
-      setShowAlert(true)
-      console.error(error)
-    }
-  }
-
-  const btnClickHandler = async (e) => {
-    const result = await mov.getRatedMovies(OLD_SESSION_ID)
-    console.log(result);
   }
 
   const renderContent = () => {
@@ -80,11 +58,6 @@ export default function TabSearch({ sessionID }) {
       return <Spinner />
     }
 
-    if (input.value === '' && filmsObj.length === 0) {
-      // console.log('null на страницу')
-      return null
-    }
-
     if (total === 0) {
       return <SearchWarning message="Ничего не найдено" />
     }
@@ -92,19 +65,11 @@ export default function TabSearch({ sessionID }) {
     if (total === null) return null
 
     console.log('возвращаем filmsList', filmsObj)
-    return <FilmsList filmsObj={filmsObj} onRatingClick={onRatingClick} />
+    return <FilmsList filmsObj={filmsObj} />
   }
 
   return (
     <>
-      <Input
-        className="search-self"
-        value={input.value}
-        onChange={input.onChange}
-        size="large"
-        placeholder="Type to search..."
-      />
-      <Button onClick={btnClickHandler}>Получить оценённые фильмы</Button>
       <Row gutter={[32, 16]}>{renderContent()}</Row>
       <Pagination
         className="text-center pagination-self"

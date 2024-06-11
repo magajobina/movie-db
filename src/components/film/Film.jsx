@@ -1,14 +1,40 @@
+/* eslint-disable consistent-return */
+/* eslint-disable arrow-body-style */
+/* eslint-disable array-callback-return */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
+import { useContext } from 'react'
 import { Col, Tag, Rate } from 'antd'
 import './film.css'
 import { format } from 'date-fns'
 import { enGB } from 'date-fns/locale'
+import GenresContext from '../genresContext'
 
-export default function Film({ title, overview, posterPath, releaseDate }) {
+export default function Film(props) {
+  const {
+    onRatingClick,
+    title,
+    overview,
+    posterPath,
+    releaseDate,
+    voteAverage,
+    rating,
+    genreIDs,
+  } = props
+
+  const globalFilmsGenres = useContext(GenresContext)
+
+  const getGenres = () => {
+    return genreIDs.map((id) => {
+      return globalFilmsGenres.find((genresObj) => id === genresObj.id).name
+    })
+  }
+
+  const filmGenresList = getGenres()
+
   const shortenOverview = () => {
-    if (overview.length < 160) return overview
-    let result = overview.substring(0, 160)
+    if (overview.length < 150) return overview
+    let result = overview.substring(0, filmGenresList.length > 2 ? 120 : 160)
     result = result.substring(0, result.lastIndexOf(' '))
 
     return `${result} ...`
@@ -33,6 +59,25 @@ export default function Film({ title, overview, posterPath, releaseDate }) {
     return `https://image.tmdb.org/t/p/w500${posterPath}`
   }
 
+  const handledRating = voteAverage.toFixed(1)
+
+  const getColorByVote = () => {
+    switch (true) {
+      case handledRating >= 0 && handledRating < 3:
+        return '#E90000'
+      case handledRating >= 3 && handledRating < 5:
+        return '#E97E00'
+      case handledRating >= 5 && handledRating < 7:
+        return '#E9D100'
+      case handledRating >= 7:
+        return '#66E900'
+      default:
+        // Возвращаемый цвет по умолчанию или обработка неправильных значений
+        return 'black'
+    }
+  }
+
+
   return (
     <Col lg={12} xs={24}>
       <div className="self__card">
@@ -40,19 +85,27 @@ export default function Film({ title, overview, posterPath, releaseDate }) {
           <img className="self__img" src={makePosterSrc()} alt="film poster" />
         </div>
         <div className="self__content">
+          <div
+            className="self__rating"
+            style={{ borderColor: getColorByVote(handledRating) }}
+          >
+            {handledRating}
+          </div>
           <h2 className="self__title">{shortenTitle()}</h2>
           <div className="self__date">{getCorrectDate()}</div>
           <div className="self__genres">
-            <Tag>Action</Tag>
-            <Tag>Drama</Tag>
+            {filmGenresList.map((item) => (
+              <Tag key={item}>{item}</Tag>
+            ))}
           </div>
           <div className="self__desc">{shortenOverview()}</div>
           <Rate
-            className="self__rating"
-            onChange={(e) => {
-              console.log(e)
+            className="self__star-rating"
+            disabled={!!rating}
+            defaultValue={rating}
+            onChange={(clickedRating) => {
+              onRatingClick(clickedRating)
             }}
-            destroyInactiveTabPane
             count={10}
           />
         </div>

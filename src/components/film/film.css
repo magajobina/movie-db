@@ -27,6 +27,7 @@
   padding: 10px 10px 10px 0;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .self__title {
@@ -36,7 +37,7 @@
   line-height: 140%;
   margin-top: 0;
   margin-bottom: 7px;
-  padding-right: 50px;
+  padding-right: 44px;
 }
 
 .self__date {
@@ -66,17 +67,32 @@
   color: #000;
 }
 
-.self__rating {
+.self__star-rating {
   display: flex;
   flex-grow: 1;
   align-items: flex-end;
 }
-.self__card .self__rating .ant-rate-star {
+.self__card .self__star-rating .ant-rate-star {
   margin-inline-end: 3px;
 }
 
-.self__rating .anticon svg {
+.self__star-rating .anticon svg {
   width: 19px;
+}
+
+.self__rating {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 6px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  /* line-height: 0; */
+  border: solid 2px #E9D100;
+  padding-bottom: 2px;
 }
 
 @media (max-width: 992px) {
