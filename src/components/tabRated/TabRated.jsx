@@ -38,7 +38,7 @@ export default function TabRated({ sessionID }) {
 
   const onPaginationChange = async (pageNumber) => {
     try {
-      const pagiArr = await mov.getRatedMovies(OLD_SESSION_ID, pageNumber)
+      const pagiArr = await mov.getRatedMovies(sessionID, pageNumber)
       const [resultObj, dataTotal] = pagiArr
 
       setFilmsData([resultObj, dataTotal])

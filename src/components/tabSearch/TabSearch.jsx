@@ -18,7 +18,6 @@ export default function TabSearch({ sessionID }) {
   const [[filmsObj, total], setFilmsData] = useState([[], null])
   const [spinner, setSpinner] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
-  // const [inputValue, setInputValue] = useState('')
   const input = useInput('')
 
   const debouncedSearch = useRef(
@@ -66,7 +65,7 @@ export default function TabSearch({ sessionID }) {
   }
 
   const btnClickHandler = async (e) => {
-    const result = await mov.getRatedMovies(OLD_SESSION_ID)
+    const result = await mov.getRatedMovies(sessionID)
     console.log(result);
   }
 
