@@ -104,7 +104,9 @@ export default function TabSearch({ sessionID }) {
         placeholder="Type to search..."
       />
       {/* <Button onClick={btnClickHandler}>Получить оценённые фильмы</Button> */}
-      <Row gutter={[32, 16]}>{renderContent()}</Row>
+      <Row gutter={[32, 16]} className="row-center-mobile">
+        {renderContent()}
+      </Row>
       <Pagination
         className="text-center pagination-self"
         onChange={onPaginationChange}

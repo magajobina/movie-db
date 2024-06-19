@@ -59,7 +59,9 @@ export default function TabRated({ sessionID }) {
     }
 
     if (showNotFound) {
-      return <ShowError description="Оцените любой фильм из другой вкладки чтоб тут что-то появилось" />
+      return (
+        <ShowError description="Оцените любой фильм из другой вкладки чтоб тут что-то появилось" />
+      )
     }
 
     if (spinner) {
@@ -79,7 +81,9 @@ export default function TabRated({ sessionID }) {
 
   return (
     <>
-      <Row gutter={[32, 16]}>{renderContent()}</Row>
+      <Row gutter={[32, 16]} className="row-center-mobile">
+        {renderContent()}
+      </Row>
       <Pagination
         className="text-center pagination-self"
         onChange={onPaginationChange}

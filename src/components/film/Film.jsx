@@ -9,6 +9,7 @@ import './film.css'
 import { format } from 'date-fns'
 import { enGB } from 'date-fns/locale'
 import GenresContext from '../genresContext'
+import poster from './backfall-poster.png'
 
 export default function Film(props) {
   const {
@@ -54,7 +55,7 @@ export default function Film(props) {
   }
 
   const makePosterSrc = () => {
-    if (!posterPath) return `${process.env.PUBLIC_URL}/backfall-poster.png`
+    if (!posterPath) return poster
 
     return `https://image.tmdb.org/t/p/w500${posterPath}`
   }

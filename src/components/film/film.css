@@ -105,3 +105,39 @@
     grid-template-columns: 183px 248px
   }
 }
+@media (max-width: 600px) {
+  .container {
+    padding: 0 20px;
+  }
+  .self__card {
+    height: auto;
+  }
+  .self__img-wrapper {
+    position: absolute;
+    top: 10px;
+    left: 27px;
+    width: 60px;
+    height: 91px;
+  }
+  .self__content {
+    padding: 10px;
+  }
+  .self__card {
+    grid-template-columns: auto;
+  }
+  .self__title {
+    padding-left: 75px;
+  }
+  .self__date {
+    padding-left: 75px;
+  }
+  .self__genres {
+    padding-left: 75px;
+  }
+  .self__desc {
+    margin-bottom: 10px;
+  }
+  .self__star-rating {
+    justify-content: flex-end;
+  }
+}

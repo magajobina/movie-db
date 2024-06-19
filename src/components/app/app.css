@@ -39,3 +39,12 @@ body {
 .search-self {
   margin-bottom: 34px;
 }
+
+@media (max-width: 600px) {
+  .container {
+    padding: 0 20px;
+  }
+  .row-center-mobile {
+    justify-content: center;
+  }
+}
