@@ -1,8 +1,5 @@
-/* eslint-disable consistent-return */
-/* eslint-disable arrow-body-style */
-/* eslint-disable array-callback-return */
 /* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
+
 import { useContext } from 'react'
 import { Col, Tag, Rate } from 'antd'
 import './film.css'
@@ -25,11 +22,8 @@ export default function Film(props) {
 
   const globalFilmsGenres = useContext(GenresContext)
 
-  const getGenres = () => {
-    return genreIDs.map((id) => {
-      return globalFilmsGenres.find((genresObj) => id === genresObj.id).name
-    })
-  }
+  const getGenres = () =>
+    genreIDs.map((id) => globalFilmsGenres.find((genresObj) => id === genresObj.id).name)
 
   const filmGenresList = getGenres()
 
@@ -77,7 +71,6 @@ export default function Film(props) {
         return 'black'
     }
   }
-
 
   return (
     <Col lg={12} xs={24}>

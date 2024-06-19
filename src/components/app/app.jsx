@@ -1,8 +1,5 @@
-/* eslint-disable consistent-return */
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable no-unused-vars */
-import { Col, Row, Spin, Alert, Pagination, Input, Tabs } from 'antd'
-import { useState, useEffect, useRef, createContext } from 'react'
+import { Alert, Tabs } from 'antd'
+import { useState, useEffect } from 'react'
 import { Offline } from 'react-detect-offline'
 import TabRated from '../tabRated'
 import TabSearch from '../tabSearch'
@@ -13,11 +10,10 @@ import './app.css'
 const mov = new MovieService()
 
 export default function App() {
-  const [genresList, setGenresList] = useState([]) // ЗАЧЕКАТЬ ПОДУМАТЬ
-  const [sessionID, setSessionID] = useState('') // ЗАЧЕКАТЬ ПОДУМАТЬ
+  const [genresList, setGenresList] = useState([])
+  const [sessionID, setSessionID] = useState('')
 
   useEffect(() => {
-    // ПОДУМАТЬ ЗАЧЕКАТЬ
     mov
       .getGenres()
       .then((result) => {
@@ -63,9 +59,6 @@ export default function App() {
             centered
             destroyInactiveTabPane
             items={tabsItems}
-            onChange={(e) => {
-              console.log(e)
-            }}
           />
         </GenresContext.Provider>
       </div>

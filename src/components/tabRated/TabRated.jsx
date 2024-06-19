@@ -1,8 +1,6 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-curly-brace-presence */
-import { Col, Row, Spin, Alert, Pagination, Input, Tabs, Button } from 'antd'
-import { useState, useEffect, useRef } from 'react'
+import { Row, Pagination } from 'antd'
+import { useState, useEffect } from 'react'
 import MovieService from '../../services/movie-service'
 import FilmsList from '../filmsList'
 import Spinner from '../spinner'
@@ -10,7 +8,7 @@ import ShowError from '../showError'
 import SearchWarning from '../searchWarning'
 
 const mov = new MovieService()
-const OLD_SESSION_ID = '0b4ee637939fd57b4c0203baefe81348'
+// const OLD_SESSION_ID = '0b4ee637939fd57b4c0203baefe81348'
 
 export default function TabRated({ sessionID }) {
   const [[filmsObj, total], setFilmsData] = useState([[], null])
@@ -32,7 +30,6 @@ export default function TabRated({ sessionID }) {
         } else {
           setShowAlert(true)
         }
-        console.log(error)
       } finally {
         setSpinner(false)
       }
@@ -49,7 +46,6 @@ export default function TabRated({ sessionID }) {
       setFilmsData([resultObj, dataTotal])
     } catch (error) {
       setShowAlert(true)
-      console.error(error)
     }
   }
 
@@ -65,7 +61,6 @@ export default function TabRated({ sessionID }) {
     }
 
     if (spinner) {
-      console.log('Спиннер')
       return <Spinner />
     }
 
@@ -75,7 +70,7 @@ export default function TabRated({ sessionID }) {
 
     if (total === null) return null
 
-    console.log('возвращаем filmsList', filmsObj)
+    // console.log('возвращаем filmsList', filmsObj)
     return <FilmsList filmsObj={filmsObj} />
   }
 

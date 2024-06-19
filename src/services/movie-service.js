@@ -1,7 +1,4 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
-/* eslint-disable class-methods-use-this */
-/* eslint-disable array-callback-return */
+
 export default class MovieService {
   #apiBase = 'https://api.themoviedb.org/3'
 
@@ -53,6 +50,7 @@ export default class MovieService {
     return res.guest_session_id
   }
 
+  // eslint-disable-next-line class-methods-use-this
   transformFilmsData(filmsList) {
     const result = filmsList.map((item) => ({
       title: item.title,
@@ -71,7 +69,7 @@ export default class MovieService {
     const res = await this.getResource(
       `/search/movie?query=${keyWords}&page=${pageNumper}`
     )
-    console.log(res)
+    // console.log(res)
 
     return [this.transformFilmsData(res.results), res.total_results]
   }
@@ -95,7 +93,7 @@ export default class MovieService {
 
     const res = await this.getResource(url, options, false)
 
-    console.log('Add Rating message:', res.status_message)
+    // console.log('Add Rating message:', res.status_message)
 
     return res.status_message
   }
@@ -112,7 +110,7 @@ export default class MovieService {
 
     const res = await this.getResourceRated(url, options, false)
 
-    console.log('getRatedMovies:', res)
+    // console.log('getRatedMovies:', res)
 
     return [this.transformFilmsData(res.results), res.total_results]
   }

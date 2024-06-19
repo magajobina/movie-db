@@ -1,7 +1,5 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable no-unused-vars */
-import { Col, Row, Spin, Alert, Pagination, Input, Tabs, Button } from 'antd'
+import { Row, Pagination, Input } from 'antd'
 import { useState, useEffect, useRef } from 'react'
 import { debounce } from 'lodash'
 import FilmsList from '../filmsList'
@@ -12,7 +10,7 @@ import MovieService from '../../services/movie-service'
 import useInput from '../../hooks/useInput'
 
 const mov = new MovieService()
-const OLD_SESSION_ID = '0b4ee637939fd57b4c0203baefe81348'
+// const OLD_SESSION_ID = '0b4ee637939fd57b4c0203baefe81348'
 
 export default function TabSearch({ sessionID }) {
   const [[filmsObj, total], setFilmsData] = useState([[], null])
@@ -30,7 +28,6 @@ export default function TabSearch({ sessionID }) {
         setFilmsData([resultObj, dataTotal])
       } catch (error) {
         setShowAlert(true)
-        console.error(error)
       } finally {
         setSpinner(false)
       }
@@ -51,7 +48,6 @@ export default function TabSearch({ sessionID }) {
       setFilmsData([resultObj, dataTotal])
     } catch (error) {
       setShowAlert(true)
-      console.error(error)
     }
   }
 
@@ -60,14 +56,8 @@ export default function TabSearch({ sessionID }) {
       await mov.addRating(movieID, rating, sessionID)
     } catch (error) {
       setShowAlert(true)
-      console.error(error)
     }
   }
-
-  // const btnClickHandler = async (e) => {
-  //   const result = await mov.getRatedMovies(sessionID)
-  //   console.log(result);
-  // }
 
   const renderContent = () => {
     if (showAlert) {
@@ -75,12 +65,10 @@ export default function TabSearch({ sessionID }) {
     }
 
     if (spinner) {
-      console.log('Спиннер')
       return <Spinner />
     }
 
     if (input.value === '' && filmsObj.length === 0) {
-      // console.log('null на страницу')
       return null
     }
 
@@ -103,7 +91,6 @@ export default function TabSearch({ sessionID }) {
         size="large"
         placeholder="Type to search..."
       />
-      {/* <Button onClick={btnClickHandler}>Получить оценённые фильмы</Button> */}
       <Row gutter={[32, 16]} className="row-center-mobile">
         {renderContent()}
       </Row>
