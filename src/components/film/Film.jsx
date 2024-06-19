@@ -54,7 +54,7 @@ export default function Film(props) {
   }
 
   const makePosterSrc = () => {
-    if (!posterPath) return '/backfall-poster.png'
+    if (!posterPath) return `${process.env.PUBLIC_URL}/backfall-poster.png`
 
     return `https://image.tmdb.org/t/p/w500${posterPath}`
   }
