@@ -10,31 +10,36 @@ import ShowError from '../showError'
 import SearchWarning from '../searchWarning'
 
 const mov = new MovieService()
-const OLD_SESSION_ID = 'd04dee17c91f6900e24f25ea3ce65703'
+const OLD_SESSION_ID = '0b4ee637939fd57b4c0203baefe81348'
 
 export default function TabRated({ sessionID }) {
   const [[filmsObj, total], setFilmsData] = useState([[], null])
   const [spinner, setSpinner] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
+  const [showNotFound, setShowNotFound] = useState(false)
 
   useEffect(() => {
     const initFilms = async () => {
       try {
         setSpinner(true)
-        const resultArr = await mov.getRatedMovies(OLD_SESSION_ID)
+        const resultArr = await mov.getRatedMovies(sessionID)
         const [resultObj, dataTotal] = resultArr
 
         setFilmsData([resultObj, dataTotal])
       } catch (error) {
-        setShowAlert(true)
-        console.error(error)
+        if (error.code === 404) {
+          setShowNotFound(true)
+        } else {
+          setShowAlert(true)
+        }
+        console.log(error)
       } finally {
         setSpinner(false)
       }
     }
 
     initFilms()
-  }, [])
+  }, [sessionID])
 
   const onPaginationChange = async (pageNumber) => {
     try {
@@ -51,6 +56,10 @@ export default function TabRated({ sessionID }) {
   const renderContent = () => {
     if (showAlert) {
       return <ShowError />
+    }
+
+    if (showNotFound) {
+      return <ShowError description="Оцените любой фильм из другой вкладки чтоб тут что-то появилось" />
     }
 
     if (spinner) {

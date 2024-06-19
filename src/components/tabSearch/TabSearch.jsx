@@ -12,7 +12,7 @@ import MovieService from '../../services/movie-service'
 import useInput from '../../hooks/useInput'
 
 const mov = new MovieService()
-const OLD_SESSION_ID = 'd04dee17c91f6900e24f25ea3ce65703'
+const OLD_SESSION_ID = '0b4ee637939fd57b4c0203baefe81348'
 
 export default function TabSearch({ sessionID }) {
   const [[filmsObj, total], setFilmsData] = useState([[], null])
@@ -64,10 +64,10 @@ export default function TabSearch({ sessionID }) {
     }
   }
 
-  const btnClickHandler = async (e) => {
-    const result = await mov.getRatedMovies(sessionID)
-    console.log(result);
-  }
+  // const btnClickHandler = async (e) => {
+  //   const result = await mov.getRatedMovies(sessionID)
+  //   console.log(result);
+  // }
 
   const renderContent = () => {
     if (showAlert) {
@@ -103,7 +103,7 @@ export default function TabSearch({ sessionID }) {
         size="large"
         placeholder="Type to search..."
       />
-      <Button onClick={btnClickHandler}>Получить оценённые фильмы</Button>
+      {/* <Button onClick={btnClickHandler}>Получить оценённые фильмы</Button> */}
       <Row gutter={[32, 16]}>{renderContent()}</Row>
       <Pagination
         className="text-center pagination-self"

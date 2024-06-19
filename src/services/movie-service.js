@@ -12,7 +12,26 @@ export default class MovieService {
 
   async getResource(argUrl, options, useAPIKey = true) {
     const url = this.#apiBase + argUrl + (useAPIKey ? this.#apiKey : '')
+
     const res = await fetch(url, options)
+
+    if (!res.ok) {
+      throw new Error(`Could not fetch ${url}, received ${res.status}`)
+    }
+
+    return res.json()
+  }
+
+  async getResourceRated(argUrl, options) {
+    const url = this.#apiBase + argUrl
+
+    const res = await fetch(url, options)
+
+    if (!res.ok && res.status === 404) {
+      const err = new Error('Movies were not found due to the lack of movies you rated.')
+      err.code = 404
+      throw err
+    }
 
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`)
@@ -91,11 +110,10 @@ export default class MovieService {
       },
     }
 
-    const res = await this.getResource(url, options, false)
+    const res = await this.getResourceRated(url, options, false)
 
     console.log('getRatedMovies:', res)
 
     return [this.transformFilmsData(res.results), res.total_results]
   }
-
 }

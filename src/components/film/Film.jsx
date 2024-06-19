@@ -61,7 +61,7 @@ export default function Film(props) {
 
   const handledRating = voteAverage.toFixed(1)
 
-  const getColorByVote = () => {
+  const getColorByRating = () => {
     switch (true) {
       case handledRating >= 0 && handledRating < 3:
         return '#E90000'
@@ -87,7 +87,7 @@ export default function Film(props) {
         <div className="self__content">
           <div
             className="self__rating"
-            style={{ borderColor: getColorByVote(handledRating) }}
+            style={{ borderColor: getColorByRating(handledRating) }}
           >
             {handledRating}
           </div>
