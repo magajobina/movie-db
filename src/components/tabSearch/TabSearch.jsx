@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { Row, Pagination, Input } from 'antd'
 import { useState, useEffect, useRef } from 'react'
@@ -7,16 +8,15 @@ import Spinner from '../spinner'
 import ShowError from '../showError'
 import SearchWarning from '../searchWarning'
 import MovieService from '../../services/movie-service'
-import useInput from '../../hooks/useInput'
 
 const mov = new MovieService()
 // const OLD_SESSION_ID = '0b4ee637939fd57b4c0203baefe81348'
 
-export default function TabSearch({ sessionID }) {
+export default function TabSearch({ sessionID, searchMem, setSearchMem }) {
   const [[filmsObj, total], setFilmsData] = useState([[], null])
   const [spinner, setSpinner] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
-  const input = useInput('')
+  const [input, setInput] = useState('')
 
   const debouncedSearch = useRef(
     debounce(async (criteria) => {
@@ -35,10 +35,17 @@ export default function TabSearch({ sessionID }) {
   ).current
 
   useEffect(() => {
-    if (input.value.trim() !== '') {
-      debouncedSearch(input.value)
+    if (input.trim() !== '') {
+      debouncedSearch(input)
+      setSearchMem(input)
+    } 
+  }, [input])
+
+  useEffect(() => {
+    if (searchMem !== '') {
+      setInput(searchMem)
     }
-  }, [input.value])
+  }, [])
 
   const onPaginationChange = async (pageNumber) => {
     try {
@@ -59,6 +66,10 @@ export default function TabSearch({ sessionID }) {
     }
   }
 
+  const inputHandler = (e) => {
+    setInput(e.target.value)
+  }
+
   const renderContent = () => {
     if (showAlert) {
       return <ShowError />
@@ -68,7 +79,7 @@ export default function TabSearch({ sessionID }) {
       return <Spinner />
     }
 
-    if (input.value === '' && filmsObj.length === 0) {
+    if (input === '' && filmsObj.length === 0) {
       return null
     }
 
@@ -86,8 +97,8 @@ export default function TabSearch({ sessionID }) {
     <>
       <Input
         className="search-self"
-        value={input.value}
-        onChange={input.onChange}
+        value={input}
+        onChange={inputHandler}
         size="large"
         placeholder="Type to search..."
       />

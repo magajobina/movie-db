@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Alert, Tabs } from 'antd'
 import { useState, useEffect } from 'react'
 import { Offline } from 'react-detect-offline'
@@ -12,6 +13,7 @@ const mov = new MovieService()
 export default function App() {
   const [genresList, setGenresList] = useState([])
   const [sessionID, setSessionID] = useState('')
+  const [searchMem, setSearchMem] = useState('')
 
   useEffect(() => {
     mov
@@ -33,7 +35,13 @@ export default function App() {
     {
       key: 'search',
       label: 'Search',
-      children: <TabSearch sessionID={sessionID} />,
+      children: (
+        <TabSearch
+          sessionID={sessionID}
+          searchMem={searchMem}
+          setSearchMem={setSearchMem}
+        />
+      ),
     },
     {
       key: 'rated',
@@ -54,12 +62,7 @@ export default function App() {
           />
         </Offline>
         <GenresContext.Provider value={genresList}>
-          <Tabs
-            defaultActiveKey="1"
-            centered
-            destroyInactiveTabPane
-            items={tabsItems}
-          />
+          <Tabs defaultActiveKey="1" centered destroyInactiveTabPane items={tabsItems} />
         </GenresContext.Provider>
       </div>
     </div>
