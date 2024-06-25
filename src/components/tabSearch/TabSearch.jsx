@@ -18,49 +18,43 @@ export default function TabSearch({ sessionID, searchMem, setSearchMem }) {
   const [showAlert, setShowAlert] = useState(false)
   const [input, setInput] = useState('')
 
+  const searchFunction = async (criteria, pageNumber = 1) => {
+    try {
+      setSpinner(true);
+
+      const searchArr = await mov.searchFilms(criteria, pageNumber, sessionID);
+
+      setFilmsData(searchArr);
+      setSearchMem({ inputText: criteria, page: pageNumber });
+    } catch (error) {
+      console.error('Error in searchFunction:', error);
+      setShowAlert(true);
+    } finally {
+      setSpinner(false);
+    }
+  };
+
   const debouncedSearch = useRef(
     debounce(async (criteria) => {
-      try {
-        setSpinner(true)
-        const resultArr = await mov.searchFilms(criteria, 1)
-        const [resultObj, dataTotal] = resultArr
-
-        setFilmsData([resultObj, dataTotal])
-      } catch (error) {
-        setShowAlert(true)
-      } finally {
-        setSpinner(false)
-      }
+      searchFunction(criteria)
     }, 1000)
   ).current
 
   useEffect(() => {
-    if (input.trim() !== '') {
-      debouncedSearch(input)
-      setSearchMem(input)
-    } 
-  }, [input])
-
-  useEffect(() => {
-    if (searchMem !== '') {
-      setInput(searchMem)
+    if (searchMem.inputText !== '') {
+      setInput(searchMem.inputText)
+      searchFunction(searchMem.inputText, searchMem.page)
     }
   }, [])
 
   const onPaginationChange = async (pageNumber) => {
-    try {
-      const pagiArr = await mov.searchFilms(input.value, pageNumber)
-      const [resultObj, dataTotal] = pagiArr
-
-      setFilmsData([resultObj, dataTotal])
-    } catch (error) {
-      setShowAlert(true)
-    }
+    searchFunction(input, pageNumber)
   }
 
   const onRatingClick = async (rating, movieID) => {
     try {
       await mov.addRating(movieID, rating, sessionID)
+      // добавить получение данных о фильмах оцененных
     } catch (error) {
       setShowAlert(true)
     }
@@ -68,6 +62,9 @@ export default function TabSearch({ sessionID, searchMem, setSearchMem }) {
 
   const inputHandler = (e) => {
     setInput(e.target.value)
+    if (e.target.value.trim() !== '') {
+      debouncedSearch(e.target.value)
+    }
   }
 
   const renderContent = () => {
@@ -89,7 +86,7 @@ export default function TabSearch({ sessionID, searchMem, setSearchMem }) {
 
     if (total === null) return null
 
-    console.log('возвращаем filmsList', filmsObj)
+    // console.log('возвращаем filmsList', filmsObj)
     return <FilmsList filmsObj={filmsObj} onRatingClick={onRatingClick} />
   }
 
@@ -108,7 +105,7 @@ export default function TabSearch({ sessionID, searchMem, setSearchMem }) {
       <Pagination
         className="text-center pagination-self"
         onChange={onPaginationChange}
-        defaultCurrent={1}
+        defaultCurrent={searchMem.page}
         total={total}
         pageSize={20}
         showSizeChanger={false}

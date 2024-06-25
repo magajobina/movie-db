@@ -21,9 +21,8 @@ export default function TabRated({ sessionID }) {
       try {
         setSpinner(true)
         const resultArr = await mov.getRatedMovies(sessionID)
-        const [resultObj, dataTotal] = resultArr
 
-        setFilmsData([resultObj, dataTotal])
+        setFilmsData(resultArr)
       } catch (error) {
         if (error.code === 404) {
           setShowNotFound(true)

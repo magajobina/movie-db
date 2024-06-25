@@ -8,18 +8,16 @@ import { enGB } from 'date-fns/locale'
 import GenresContext from '../genresContext'
 import poster from './backfall-poster.png'
 
-export default function Film(props) {
-  const {
-    onRatingClick,
-    title,
-    overview,
-    posterPath,
-    releaseDate,
-    voteAverage,
-    rating,
-    genreIDs,
-  } = props
-
+export default function Film({
+  onRatingClick,
+  title,
+  overview,
+  posterPath,
+  releaseDate,
+  voteAverage,
+  rating,
+  genreIDs,
+}) {
   const globalFilmsGenres = useContext(GenresContext)
 
   const getGenres = () =>

@@ -6,6 +6,7 @@ import TabRated from '../tabRated'
 import TabSearch from '../tabSearch'
 import GenresContext from '../genresContext'
 import MovieService from '../../services/movie-service'
+import Spinner from '../spinner'
 import './app.css'
 
 const mov = new MovieService()
@@ -13,7 +14,8 @@ const mov = new MovieService()
 export default function App() {
   const [genresList, setGenresList] = useState([])
   const [sessionID, setSessionID] = useState('')
-  const [searchMem, setSearchMem] = useState('')
+  const [searchMem, setSearchMem] = useState({ inputText: '', page: 1 })
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     mov
@@ -28,6 +30,7 @@ export default function App() {
     mov.createGuestSession().then((result) => {
       console.log(result)
       setSessionID(result)
+      setLoading(false)
     })
   }, [])
 
@@ -35,7 +38,7 @@ export default function App() {
     {
       key: 'search',
       label: 'Search',
-      children: (
+      children: sessionID && (
         <TabSearch
           sessionID={sessionID}
           searchMem={searchMem}
@@ -46,7 +49,7 @@ export default function App() {
     {
       key: 'rated',
       label: 'Rated',
-      children: <TabRated sessionID={sessionID} />,
+      children: sessionID && <TabRated sessionID={sessionID} />,
     },
   ]
 
@@ -61,9 +64,18 @@ export default function App() {
             type="warning"
           />
         </Offline>
-        <GenresContext.Provider value={genresList}>
-          <Tabs defaultActiveKey="1" centered destroyInactiveTabPane items={tabsItems} />
-        </GenresContext.Provider>
+        {loading ? (
+          <Spinner fullscreen />
+        ) : (
+          <GenresContext.Provider value={genresList}>
+            <Tabs
+              defaultActiveKey="1"
+              centered
+              destroyInactiveTabPane
+              items={tabsItems}
+            />
+          </GenresContext.Provider>
+        )}
       </div>
     </div>
   )

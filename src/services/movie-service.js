@@ -1,3 +1,5 @@
+/* eslint-disable default-param-last */
+/* eslint-disable no-unused-vars */
 
 export default class MovieService {
   #apiBase = 'https://api.themoviedb.org/3'
@@ -65,11 +67,21 @@ export default class MovieService {
     return result
   }
 
-  async searchFilms(keyWords, pageNumper = 1) {
+  async searchFilms(keyWords, pageNumper = 1, sessionID) {
     const res = await this.getResource(
       `/search/movie?query=${keyWords}&page=${pageNumper}`
     )
-    // console.log(res)
+    console.log('searchFilms RES!!!', res)
+    let foundUserRatedFilms
+    const foundFilmsButWithoutUserRating = res.results
+
+    // try {
+    //   foundUserRatedFilms = await this.getRatedMovies(sessionID, pageNumper)
+    // } catch (error) {
+    //   const qweqwe = error
+    // }
+
+    console.log('object', foundUserRatedFilms)
 
     return [this.transformFilmsData(res.results), res.total_results]
   }
@@ -93,7 +105,7 @@ export default class MovieService {
 
     const res = await this.getResource(url, options, false)
 
-    // console.log('Add Rating message:', res.status_message)
+    console.log('Add Rating message:', res.status_message)
 
     return res.status_message
   }

@@ -111,6 +111,8 @@
   }
   .self__card {
     height: auto;
+    grid-template-columns: auto;
+    width: 100%;
   }
   .self__img-wrapper {
     position: absolute;
@@ -121,9 +123,6 @@
   }
   .self__content {
     padding: 10px;
-  }
-  .self__card {
-    grid-template-columns: auto;
   }
   .self__title {
     padding-left: 75px;
