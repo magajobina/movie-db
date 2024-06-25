@@ -1,7 +1,6 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable default-param-last */
 
-
 export default class MovieService {
   #apiBase = 'https://api.themoviedb.org/3'
 
@@ -24,8 +23,14 @@ export default class MovieService {
 
   async getResourceRated(argUrl, options) {
     const url = this.#apiBase + argUrl
-
-    const res = await fetch(url, options)
+    let res
+    try {
+      res = await fetch(url, options)
+    } catch (error) {
+      console.log(error)
+      // Либо вернуть значение, либо выбросить свою ошибку для управления дальше
+      return { error: 'Failed to fetch resource due to network error or CORS issue' }
+    }
 
     if (!res.ok && res.status === 404) {
       const err = new Error('Movies were not found due to the lack of movies you rated.')
@@ -72,8 +77,7 @@ export default class MovieService {
     const res = await this.getResource(
       `/search/movie?query=${keyWords}&page=${pageNumper}`
     )
-    // console.log('searchFilms RES!!!', res)
-    let foundUserRatedFilms
+    let foundUserRatedFilms = []
     const filmsWithoutRating = res.results
 
     try {
@@ -84,21 +88,23 @@ export default class MovieService {
       const qweqwe = error
     }
 
-    const resultFUCK = [];
+    const resultFUCK = []
+    if (foundUserRatedFilms) {
+      filmsWithoutRating.forEach((filmNoRating) => {
+        foundUserRatedFilms.forEach((filmRating) => {
+          if (filmNoRating.id === filmRating.id) {
+            const filmNoRatingCurrent = filmNoRating
+            filmNoRatingCurrent.rating = filmRating.rating
+            resultFUCK.push(filmNoRatingCurrent)
+          } else {
+            resultFUCK.push(filmNoRating)
+          }
+        })
+      })
+    }
 
-    filmsWithoutRating.forEach(filmNoRating => {
-      foundUserRatedFilms.forEach(filmRating => {
-        if (filmNoRating.id === filmRating.id) {
-          const filmNoRatingCurrent = filmNoRating
-          filmNoRatingCurrent.rating = filmRating.rating
-          resultFUCK.push(filmNoRatingCurrent)
-        } else {
-          resultFUCK.push(filmNoRating)
-        }
-      });
-    });
-
-    // console.log('foundUserRatedFilms', foundUserRatedFilms)
+    // console.log('resultFUCK', resultFUCK)
+    // console.log('res.results', res.results)
 
     return [this.transformFilmsData(res.results), res.total_results]
   }

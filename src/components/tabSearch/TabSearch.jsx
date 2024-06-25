@@ -26,6 +26,7 @@ export default function TabSearch({ sessionID, searchMem, setSearchMem }) {
       setFilmsData(searchArr)
       setSearchMem({ inputText: criteria, page: pageNumber })
     } catch (error) {
+      console.log(error);
       setShowAlert(true)
     } finally {
       setSpinner(false)
