@@ -1,5 +1,6 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable default-param-last */
-/* eslint-disable no-unused-vars */
+
 
 export default class MovieService {
   #apiBase = 'https://api.themoviedb.org/3'
@@ -71,17 +72,33 @@ export default class MovieService {
     const res = await this.getResource(
       `/search/movie?query=${keyWords}&page=${pageNumper}`
     )
-    console.log('searchFilms RES!!!', res)
+    // console.log('searchFilms RES!!!', res)
     let foundUserRatedFilms
-    const foundFilmsButWithoutUserRating = res.results
+    const filmsWithoutRating = res.results
 
-    // try {
-    //   foundUserRatedFilms = await this.getRatedMovies(sessionID, pageNumper)
-    // } catch (error) {
-    //   const qweqwe = error
-    // }
+    try {
+      foundUserRatedFilms = await this.getRatedMovies(sessionID, pageNumper)
+      foundUserRatedFilms = foundUserRatedFilms[0]
+    } catch (error) {
+      // eslint-disable-next-line no-unused-vars
+      const qweqwe = error
+    }
 
-    console.log('object', foundUserRatedFilms)
+    const resultFUCK = [];
+
+    filmsWithoutRating.forEach(filmNoRating => {
+      foundUserRatedFilms.forEach(filmRating => {
+        if (filmNoRating.id === filmRating.id) {
+          const filmNoRatingCurrent = filmNoRating
+          filmNoRatingCurrent.rating = filmRating.rating
+          resultFUCK.push(filmNoRatingCurrent)
+        } else {
+          resultFUCK.push(filmNoRating)
+        }
+      });
+    });
+
+    // console.log('foundUserRatedFilms', foundUserRatedFilms)
 
     return [this.transformFilmsData(res.results), res.total_results]
   }
@@ -105,7 +122,7 @@ export default class MovieService {
 
     const res = await this.getResource(url, options, false)
 
-    console.log('Add Rating message:', res.status_message)
+    // console.log('Add Rating message:', res.status_message, sessionId)
 
     return res.status_message
   }

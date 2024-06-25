@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { Row, Pagination, Input } from 'antd'
 import { useState, useEffect, useRef } from 'react'
@@ -10,7 +9,7 @@ import SearchWarning from '../searchWarning'
 import MovieService from '../../services/movie-service'
 
 const mov = new MovieService()
-// const OLD_SESSION_ID = '0b4ee637939fd57b4c0203baefe81348'
+// const OLD_SESSION_ID = 'c0ef1ac683c6b86fc872f681ddf4299b'
 
 export default function TabSearch({ sessionID, searchMem, setSearchMem }) {
   const [[filmsObj, total], setFilmsData] = useState([[], null])
@@ -20,19 +19,18 @@ export default function TabSearch({ sessionID, searchMem, setSearchMem }) {
 
   const searchFunction = async (criteria, pageNumber = 1) => {
     try {
-      setSpinner(true);
+      setSpinner(true)
 
-      const searchArr = await mov.searchFilms(criteria, pageNumber, sessionID);
+      const searchArr = await mov.searchFilms(criteria, pageNumber, sessionID)
 
-      setFilmsData(searchArr);
-      setSearchMem({ inputText: criteria, page: pageNumber });
+      setFilmsData(searchArr)
+      setSearchMem({ inputText: criteria, page: pageNumber })
     } catch (error) {
-      console.error('Error in searchFunction:', error);
-      setShowAlert(true);
+      setShowAlert(true)
     } finally {
-      setSpinner(false);
+      setSpinner(false)
     }
-  };
+  }
 
   const debouncedSearch = useRef(
     debounce(async (criteria) => {
@@ -54,7 +52,6 @@ export default function TabSearch({ sessionID, searchMem, setSearchMem }) {
   const onRatingClick = async (rating, movieID) => {
     try {
       await mov.addRating(movieID, rating, sessionID)
-      // добавить получение данных о фильмах оцененных
     } catch (error) {
       setShowAlert(true)
     }
@@ -87,7 +84,7 @@ export default function TabSearch({ sessionID, searchMem, setSearchMem }) {
     if (total === null) return null
 
     // console.log('возвращаем filmsList', filmsObj)
-    return <FilmsList filmsObj={filmsObj} onRatingClick={onRatingClick} />
+    return <FilmsList filmsObj={filmsObj} onRatingClick={onRatingClick} tab="search" />
   }
 
   return (

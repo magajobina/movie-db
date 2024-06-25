@@ -8,7 +8,7 @@ import ShowError from '../showError'
 import SearchWarning from '../searchWarning'
 
 const mov = new MovieService()
-// const OLD_SESSION_ID = '0b4ee637939fd57b4c0203baefe81348'
+// const OLD_SESSION_ID = 'c0ef1ac683c6b86fc872f681ddf4299b'
 
 export default function TabRated({ sessionID }) {
   const [[filmsObj, total], setFilmsData] = useState([[], null])
@@ -70,7 +70,7 @@ export default function TabRated({ sessionID }) {
     if (total === null) return null
 
     // console.log('возвращаем filmsList', filmsObj)
-    return <FilmsList filmsObj={filmsObj} />
+    return <FilmsList filmsObj={filmsObj} tab="rated" />
   }
 
   return (

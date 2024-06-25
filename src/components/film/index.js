@@ -1,3 +1,3 @@
-import Film from "./Film";
+import Film from './Film'
 
 export default Film

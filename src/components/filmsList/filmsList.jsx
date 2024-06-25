@@ -2,7 +2,7 @@
 import Film from '../film'
 import './filmsList.css'
 
-export default function FilmsList({ filmsObj, onRatingClick }) {
+export default function FilmsList({ filmsObj, onRatingClick, tab }) {
   const films = filmsObj.map((filmData) => {
     const { title, overview, releaseDate, posterPath, voteAverage, genreIDs, rating, id } =
       filmData
@@ -17,6 +17,7 @@ export default function FilmsList({ filmsObj, onRatingClick }) {
         genreIDs={genreIDs}
         rating={rating}
         key={id}
+        tab={tab}
       />
     )
   })
